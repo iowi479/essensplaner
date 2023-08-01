@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Container } from "@mui/material";
+import DraggableList from "./components/draggable/DraggableList";
+import { useState } from "react";
+import FoodEditor from "./components/editor/FoodEditor";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => {
+    const [editing, setEditing] = useState(false);
+    return (
+        <Container maxWidth="xl">
+            {editing ? (
+                <FoodEditor
+                    switchPage={() => {
+                        setEditing(false);
+                    }}
+                />
+            ) : (
+                <DraggableList
+                    switchPage={() => {
+                        setEditing(true);
+                    }}
+                />
+            )}
+        </Container>
+    );
+};
 
 export default App;
