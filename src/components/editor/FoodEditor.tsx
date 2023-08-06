@@ -49,7 +49,7 @@ const FoodEditor: React.FC<FoodEditorProps> = ({ switchPage }) => {
 
         let missing = -1;
         for (let i = 0; i < ids.length; i++) {
-            if (ids[i] != i) {
+            if (ids[i] !== i) {
                 missing = i;
 
                 break;

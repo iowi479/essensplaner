@@ -2,11 +2,10 @@ import {
     Autocomplete,
     Button,
     Chip,
+    Container,
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,
-    DialogTitle,
     TextField,
 } from "@mui/material";
 import { Food } from "../../types/FoodTypes";
@@ -77,60 +76,57 @@ const FoodEditDialog: React.FC<FoodEditDialogProps> = ({
 
     return (
         <Dialog open={isOpen} onClose={handleClose}>
-            <DialogTitle>Subscribe</DialogTitle>
-            <DialogContent>
-                <DialogContentText>
-                    To subscribe to this website, please enter your email
-                    address here. We will send updates occasionally.
-                </DialogContentText>
-                <TextField
-                    autoFocus
-                    label="Name"
-                    fullWidth
-                    variant="standard"
-                    sx={{ my: 2 }}
-                    value={food.name}
-                    error={food.name.length < 2}
-                    onChange={(e) => {
-                        setFood((food) => {
-                            return { ...food, name: e.target.value };
-                        });
-                    }}
-                />
-                <Autocomplete
-                    multiple
-                    options={options}
-                    value={food.tags}
-                    onChange={(_, tags) => {
-                        setFood((currentFood) => {
-                            const f = { ...currentFood, tags };
-                            return f;
-                        });
-                    }}
-                    freeSolo
-                    renderTags={(value: readonly string[], getTagProps) =>
-                        value.map((option: string, index: number) => (
-                            <Chip
-                                variant="outlined"
-                                label={option}
-                                {...getTagProps({ index })}
+            <Container sx={{ minWidth: "600px" }}>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        label="Name"
+                        fullWidth
+                        variant="standard"
+                        sx={{ my: 2 }}
+                        value={food.name}
+                        error={food.name.length < 2}
+                        onChange={(e) => {
+                            setFood((food) => {
+                                return { ...food, name: e.target.value };
+                            });
+                        }}
+                    />
+                    <Autocomplete
+                        multiple
+                        options={options}
+                        value={food.tags}
+                        onChange={(_, tags) => {
+                            setFood((currentFood) => {
+                                const f = { ...currentFood, tags };
+                                return f;
+                            });
+                        }}
+                        freeSolo
+                        renderTags={(value: readonly string[], getTagProps) =>
+                            value.map((option: string, index: number) => (
+                                <Chip
+                                    variant="outlined"
+                                    label={option}
+                                    {...getTagProps({ index })}
+                                />
+                            ))
+                        }
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                fullWidth
+                                variant="standard"
+                                label="Tags"
                             />
-                        ))
-                    }
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            fullWidth
-                            variant="standard"
-                            label="Tags"
-                        />
-                    )}
-                />
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={handleClose}>Abbrechen</Button>
-                <Button onClick={onSave}>Speichern</Button>
-            </DialogActions>
+                        )}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Abbrechen</Button>
+                    <Button onClick={onSave}>Speichern</Button>
+                </DialogActions>
+            </Container>
         </Dialog>
     );
 };

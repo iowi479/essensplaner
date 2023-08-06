@@ -1,7 +1,6 @@
 import { DraggableLocation } from "react-beautiful-dnd";
-import { Food, FoodDay } from "../../types/FoodTypes";
+import { DayColumns, Food, FoodDay } from "../../types/FoodTypes";
 import { v4 as uuidv4 } from "uuid";
-import { error } from "console";
 
 export const reorder = (
     list: Food[],
@@ -17,7 +16,7 @@ export const reorder = (
 export const copy = (
     allFoods: Food[],
     day: FoodDay,
-    column: "noon" | "evening",
+    column: DayColumns,
     source: DraggableLocation,
     destination: DraggableLocation
 ) => {
@@ -39,7 +38,7 @@ export const move = (
 
 export const remove = (
     day: FoodDay,
-    column: "noon" | "evening",
+    column: DayColumns,
     index: number
 ): FoodDay => {
     const result = Array.from(day[column]);

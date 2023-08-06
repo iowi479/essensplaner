@@ -1,5 +1,5 @@
 import { DraggableLocation } from "react-beautiful-dnd";
-import { DayColumns, FoodDay } from "../types/FoodTypes";
+import { DayColumns, FoodDay, isDayColumn } from "../types/FoodTypes";
 import { ALL_FOOD_ID } from "./env";
 import { format } from "date-fns";
 
@@ -7,10 +7,7 @@ export const idFromDate = (date: Date): number => {
     return 2023 * 10000 + date.getMonth() * 100 + date.getDate();
 };
 
-export const droppableIDOf = (
-    foodDay: FoodDay,
-    col: "noon" | "evening"
-): string => {
+export const droppableIDOf = (foodDay: FoodDay, col: DayColumns): string => {
     const id = idFromDate(foodDay.day);
     return id + "_" + col;
 };
@@ -28,12 +25,8 @@ export const decodeIDs = (
     const [destDayIdString, destColumn] = destination.droppableId.split("_");
 
     if (
-        (source.droppableId !== ALL_FOOD_ID &&
-            sourceColumn !== "noon" &&
-            sourceColumn !== "evening") ||
-        (destination.droppableId !== ALL_FOOD_ID &&
-            destColumn !== "noon" &&
-            destColumn !== "evening")
+        (source.droppableId !== ALL_FOOD_ID && !isDayColumn(sourceColumn)) ||
+        (destination.droppableId !== ALL_FOOD_ID && !isDayColumn(destColumn))
     ) {
         console.error("decoding error have to check this. This is braking!!!");
     }
@@ -77,5 +70,5 @@ export const formatDate = (day: Date): string => {
 };
 
 export const isToday = (day: Date): boolean => {
-    return new Date().toLocaleDateString() == day.toLocaleDateString();
+    return new Date().toLocaleDateString() === day.toLocaleDateString();
 };

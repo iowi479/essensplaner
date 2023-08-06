@@ -28,7 +28,33 @@ const DroppableDay: React.FC<DroppableDayProps> = ({ foodDay }) => {
                     </Typography>
                 </Box>
                 <CardContent>
-                    <Grid container spacing={2}>
+                    <Grid
+                        container
+                        columnSpacing={2}
+                        sx={{
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-around",
+                        }}
+                    >
+                        <Grid
+                            item
+                            xs={12}
+                            sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                            }}
+                        >
+                            <Typography
+                                align="center"
+                                variant="h6"
+                                color="grey"
+                                sx={{ width: "100%" }}
+                            >
+                                Mittag
+                            </Typography>
+                        </Grid>
+
                         <Grid
                             item
                             xs={6}
@@ -48,7 +74,7 @@ const DroppableDay: React.FC<DroppableDayProps> = ({ foodDay }) => {
                                     color="grey"
                                     sx={{ width: "100%" }}
                                 >
-                                    Mittag
+                                    Zuhause
                                 </Typography>
                             </Box>
                             <DroppableFoodList
@@ -76,8 +102,59 @@ const DroppableDay: React.FC<DroppableDayProps> = ({ foodDay }) => {
                                     color="grey"
                                     sx={{ width: "100%" }}
                                 >
-                                    Abend
+                                    Büro
                                 </Typography>
+                            </Box>
+                            <DroppableFoodList
+                                foodList={foodDay.work}
+                                droppableId={droppableIDOf(foodDay, "work")}
+                            />
+                        </Grid>
+
+                        <Grid
+                            item
+                            xs={12}
+                            sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                mt: 4,
+                            }}
+                        >
+                            <Typography
+                                align="center"
+                                variant="h6"
+                                color="grey"
+                                sx={{ width: "100%" }}
+                            >
+                                Abend
+                            </Typography>
+                        </Grid>
+
+                        <Grid
+                            item
+                            xs={6}
+                            sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifySelf: "center",
+                            }}
+                        >
+                            <Box
+                                sx={{
+                                    width: "100%",
+                                    p: 1,
+                                    display: "flex",
+                                    flexDirection: "row",
+                                }}
+                            >
+                                {/* <Typography
+                                    align="center"
+                                    variant="h6"
+                                    color="grey"
+                                    sx={{ width: "100%" }}
+                                >
+                                    Abend
+                                </Typography> */}
                             </Box>
                             <DroppableFoodList
                                 foodList={foodDay.evening}

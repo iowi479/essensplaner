@@ -39,19 +39,16 @@ const DraggableList: React.FC<DraggableListProps> = ({ switchPage }) => {
 
     useEffect(() => {
         const load = async () => {
-            console.log("load");
             try {
                 await setAllFoods(await fetchAllFoods());
             } catch (err) {
-                console.error("fetching all foods:");
-                console.error(err);
+                console.error("fetching all foods:", err);
             }
 
             try {
                 await setFoodList(await fetchFoodDays());
             } catch (err) {
-                console.error("fetching all days:");
-                console.error(err);
+                console.error("fetching all days:", err);
             }
             setTimeout(scrollToToday, 500);
         };
