@@ -1,4 +1,14 @@
-# Essensplaner Quickstart
+# Essensplaner
+
+## Quickstart
+
+modify .env.default and rename to .env
+
+```bash
+sh script.sh
+```
+
+## Build your own
 
 ### configure .env
 
