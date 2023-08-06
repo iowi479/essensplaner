@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import AddIcon from "@mui/icons-material/Add";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import ClearIcon from "@mui/icons-material/Clear";
 import {
     Box,
     Button,
@@ -8,12 +9,11 @@ import {
     InputAdornment,
     TextField,
 } from "@mui/material";
-import { Food } from "../../types/FoodTypes";
+import React, { useEffect, useState } from "react";
 import { fetchAllFoods, postAllFoodsUpdate } from "../../data/api";
-import ClearIcon from "@mui/icons-material/Clear";
+import { Food } from "../../types/FoodTypes";
+import { newFood } from "../../utils/food";
 import FoodCard from "./FoodCard";
-import AddIcon from "@mui/icons-material/Add";
-import { v4 as uuidv4 } from "uuid";
 import FoodEditDialog from "./FoodEditDialog";
 
 interface FoodEditorProps {
@@ -38,7 +38,7 @@ const FoodEditor: React.FC<FoodEditorProps> = ({ switchPage }) => {
         load();
     }, []);
 
-    const addNewFood = () => {
+    const onAddNewFood = () => {
         const ids: number[] = [];
 
         allFoods.forEach((food) => {
@@ -56,18 +56,15 @@ const FoodEditor: React.FC<FoodEditorProps> = ({ switchPage }) => {
             }
         }
 
-        const f: Food = {
-            id: uuidv4(),
-            databaseId: missing,
-            name: "neues Essen",
-            tags: ["neu"],
-        };
+        const createdFood = newFood(missing);
 
         setAllFoods((currentFoods) => {
-            const result = [f, ...currentFoods];
+            const result = [createdFood, ...currentFoods];
             postAllFoodsUpdate(result);
             return result;
         });
+
+        setEditDialogFood(createdFood);
     };
 
     return (
@@ -120,7 +117,7 @@ const FoodEditor: React.FC<FoodEditorProps> = ({ switchPage }) => {
                 >
                     <Button
                         variant="outlined"
-                        onClick={addNewFood}
+                        onClick={onAddNewFood}
                         endIcon={<AddIcon />}
                     >
                         Hinzufügen

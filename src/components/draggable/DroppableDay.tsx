@@ -1,8 +1,9 @@
-import { FoodDay } from "../../types/FoodTypes";
-import React from "react";
 import { Box, CardContent, Grid, Paper, Typography } from "@mui/material";
-import DroppableFoodList from "./DroppableFoodList";
+import React from "react";
+import { FoodDay } from "../../types/FoodTypes";
 import { droppableIDOf, formatDate, isToday } from "../../utils/converters";
+import { BACKGROUND_CURRENT_DAY, BACKGROUND_DAY } from "../../utils/env";
+import DroppableFoodList from "./DroppableFoodList";
 
 interface DroppableDayProps {
     foodDay: FoodDay;
@@ -18,8 +19,8 @@ const DroppableDay: React.FC<DroppableDayProps> = ({ foodDay }) => {
                     m: 1,
                     p: 2,
                     backgroundColor: isToday(foodDay.day)
-                        ? "#fff9f9"
-                        : "#ffffff",
+                        ? BACKGROUND_CURRENT_DAY
+                        : BACKGROUND_DAY,
                 }}
             >
                 <Box>
@@ -63,7 +64,6 @@ const DroppableDay: React.FC<DroppableDayProps> = ({ foodDay }) => {
                             <Box
                                 sx={{
                                     width: "100%",
-                                    p: 1,
                                     display: "flex",
                                     flexDirection: "row",
                                 }}
@@ -91,7 +91,6 @@ const DroppableDay: React.FC<DroppableDayProps> = ({ foodDay }) => {
                             <Box
                                 sx={{
                                     width: "100%",
-                                    p: 1,
                                     display: "flex",
                                     flexDirection: "row",
                                 }}
@@ -110,26 +109,6 @@ const DroppableDay: React.FC<DroppableDayProps> = ({ foodDay }) => {
                                 droppableId={droppableIDOf(foodDay, "work")}
                             />
                         </Grid>
-
-                        <Grid
-                            item
-                            xs={12}
-                            sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                mt: 4,
-                            }}
-                        >
-                            <Typography
-                                align="center"
-                                variant="h6"
-                                color="grey"
-                                sx={{ width: "100%" }}
-                            >
-                                Abend
-                            </Typography>
-                        </Grid>
-
                         <Grid
                             item
                             xs={6}
@@ -137,24 +116,24 @@ const DroppableDay: React.FC<DroppableDayProps> = ({ foodDay }) => {
                                 display: "flex",
                                 flexDirection: "column",
                                 justifySelf: "center",
+                                mt: 4,
                             }}
                         >
                             <Box
                                 sx={{
                                     width: "100%",
-                                    p: 1,
                                     display: "flex",
                                     flexDirection: "row",
                                 }}
                             >
-                                {/* <Typography
+                                <Typography
                                     align="center"
                                     variant="h6"
                                     color="grey"
                                     sx={{ width: "100%" }}
                                 >
                                     Abend
-                                </Typography> */}
+                                </Typography>
                             </Box>
                             <DroppableFoodList
                                 foodList={foodDay.evening}

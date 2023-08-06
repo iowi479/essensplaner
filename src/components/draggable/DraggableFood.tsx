@@ -1,11 +1,11 @@
+import { Box, Card, CardContent, Typography } from "@mui/material";
+import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { Food } from "../../types/FoodTypes";
-import React from "react";
 import {
     ITEM_BACKGROUNDCOLOR,
     ITEM_BACKGROUNDCOLOR_HOVER,
-} from "../../styles/draggableStyles";
-import { Box, Card, CardContent, Typography } from "@mui/material";
+} from "../../utils/env";
 
 interface DraggableFoodProps {
     food: Food;

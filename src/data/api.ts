@@ -1,12 +1,5 @@
 import { Food, FoodDay, jsonToFoodDays } from "../types/FoodTypes";
-
-const BACKEND_PORT_ENV = parseInt(process.env["REACT_APP_BACKEND_PORT"] || "1");
-const BACKEND_PORT = Number.isInteger(BACKEND_PORT_ENV)
-    ? BACKEND_PORT_ENV
-    : 3001;
-const BACKEND_HOST = process.env["REACT_APP_BACKEND_HOST"] || "localhost";
-const BACKEND_PATH = process.env["REACT_APP_BACKEND_PATH"] || "";
-const BACKEND = `http://${BACKEND_HOST}:${BACKEND_PORT}${BACKEND_PATH}`;
+import { BACKEND } from "../utils/env";
 
 export const fetchAllFoods = async (): Promise<Food[]> => {
     const req = await fetch(BACKEND + "/food/all");

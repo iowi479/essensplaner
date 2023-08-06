@@ -1,7 +1,7 @@
+import { format } from "date-fns";
 import { DraggableLocation } from "react-beautiful-dnd";
 import { DayColumns, FoodDay, isDayColumn } from "../types/FoodTypes";
 import { ALL_FOOD_ID } from "./env";
-import { format } from "date-fns";
 
 export const idFromDate = (date: Date): number => {
     return 2023 * 10000 + date.getMonth() * 100 + date.getDate();
@@ -42,25 +42,25 @@ export const formatDate = (day: Date): string => {
     let prefix = "";
     switch (day.getDay()) {
         case 0:
-            prefix = "Mo";
+            prefix = "So";
             break;
         case 1:
-            prefix = "Di";
+            prefix = "Mo";
             break;
         case 2:
-            prefix = "Mi";
+            prefix = "Di";
             break;
         case 3:
-            prefix = "Do";
+            prefix = "Mi";
             break;
         case 4:
-            prefix = "Fr";
+            prefix = "Do";
             break;
         case 5:
-            prefix = "Sa";
+            prefix = "Fr";
             break;
         case 6:
-            prefix = "So";
+            prefix = "Sa";
             break;
         default:
             prefix = "";

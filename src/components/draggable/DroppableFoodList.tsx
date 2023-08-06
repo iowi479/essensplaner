@@ -1,14 +1,13 @@
+import { Box } from "@mui/material";
+import React from "react";
 import { Droppable } from "react-beautiful-dnd";
 import { Food } from "../../types/FoodTypes";
-import React from "react";
 import {
     LIST_BACKGROUNDCOLOR,
     LIST_BACKGROUNDCOLOR_DRAGGING,
     MIN_ITEM_HEIGHT,
-    getListStyle,
-} from "../../styles/draggableStyles";
+} from "../../utils/env";
 import DraggableFood from "./DraggableFood";
-import { Box } from "@mui/material";
 
 interface DroppableFoodListProps {
     foodList: Food[];
@@ -32,7 +31,9 @@ const DroppableFoodList: React.FC<DroppableFoodListProps> = ({
                 {(provided, snapshot) => (
                     <div
                         ref={provided.innerRef}
-                        style={getListStyle(snapshot.isDraggingOver)}
+                        style={{
+                            height: "100%",
+                        }}
                         {...provided.droppableProps}
                     >
                         <Box

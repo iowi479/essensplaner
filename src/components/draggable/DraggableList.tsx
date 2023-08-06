@@ -1,10 +1,13 @@
-import ClearIcon from "@mui/icons-material/Clear";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import {
+    Autocomplete,
     Box,
+    Button,
+    Chip,
     Grid,
     IconButton,
-    InputAdornment,
     TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -24,7 +27,8 @@ import {
     reorder,
     scrollToToday,
 } from "../../utils/dnd/transformations";
-import { ALL_FOOD_ID } from "../../utils/env";
+import { ALL_FOOD_ID, WINDOW_WIDTH_SHOW_SIDEBAR_SIZE } from "../../utils/env";
+import { filterFoods, getTags } from "../../utils/food";
 import DroppableDay from "./DroppableDay";
 import DroppableFoodList from "./DroppableFoodList";
 
@@ -35,7 +39,10 @@ interface DraggableListProps {
 const DraggableList: React.FC<DraggableListProps> = ({ switchPage }) => {
     const [foodList, setFoodList] = useState<FoodDay[]>([]);
     const [allFoods, setAllFoods] = useState<Food[]>([]);
-    const [allFoodFilter, setAllFoodFilter] = useState<string>("");
+    const [showSideBar, setShowSideBar] = useState<boolean>(true);
+    const [allFoodFilterText, setAllFoodFilterText] = useState<string>("");
+    const [allFoodFilters, setAllFoodFilters] = useState<string[]>([]);
+    const [allFoodTags, setAllFoodTags] = useState<string[]>(getTags(allFoods));
 
     useEffect(() => {
         const load = async () => {
@@ -55,6 +62,22 @@ const DraggableList: React.FC<DraggableListProps> = ({ switchPage }) => {
 
         load();
     }, []);
+
+    useEffect(() => {
+        setAllFoodTags(getTags(allFoods));
+    }, [allFoods]);
+
+    useEffect(() => {
+        const handleResize = () => {
+            const shouldShow =
+                window.innerWidth > WINDOW_WIDTH_SHOW_SIDEBAR_SIZE;
+            if (showSideBar !== shouldShow) {
+                setShowSideBar(shouldShow);
+            }
+        };
+
+        window.addEventListener("resize", handleResize);
+    });
 
     const onDragEnd = (result: DropResult): void => {
         const { source, destination } = result;
@@ -157,81 +180,137 @@ const DraggableList: React.FC<DraggableListProps> = ({ switchPage }) => {
     };
 
     return (
-        <DragDropContext onDragEnd={onDragEnd}>
-            <Grid container spacing={2}>
-                <Grid
-                    item
-                    xs={8}
-                    sx={{ maxHeight: "100vh", overflow: "scroll" }}
-                >
-                    <Box sx={{ display: "flex", flexDirection: "column" }}>
-                        {foodList.map((foodDay, i) => (
-                            <DroppableDay
-                                foodDay={foodDay}
-                                key={i}
-                            ></DroppableDay>
-                        ))}
-                    </Box>
-                </Grid>
+        <>
+            <DragDropContext onDragEnd={onDragEnd}>
+                <Grid container spacing={2}>
+                    <Grid
+                        item
+                        xs={showSideBar ? 7 : 11}
+                        sx={{ maxHeight: "100vh", overflow: "scroll" }}
+                    >
+                        <Box sx={{ display: "flex", flexDirection: "column" }}>
+                            {foodList.map((foodDay, i) => (
+                                <DroppableDay
+                                    foodDay={foodDay}
+                                    key={i}
+                                ></DroppableDay>
+                            ))}
+                        </Box>
+                    </Grid>
 
-                <Grid
-                    item
-                    xs={4}
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        height: "100vh",
-                    }}
-                >
-                    <Box sx={{ m: 2, display: "flex", flexDirection: "row" }}>
-                        <TextField
-                            name="Filter"
-                            label="Filter"
-                            fullWidth
-                            value={allFoodFilter}
-                            onChange={(e) => {
-                                setAllFoodFilter(e.target.value);
+                    {showSideBar ? (
+                        <Grid
+                            item
+                            xs={4}
+                            sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                height: "100vh",
                             }}
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            sx={{
-                                                visibility: allFoodFilter
-                                                    ? "visible"
-                                                    : "hidden",
-                                            }}
-                                            onClick={() => setAllFoodFilter("")}
-                                        >
-                                            <ClearIcon />
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                        <IconButton
-                            aria-label="delete"
-                            size="large"
-                            sx={{ ml: 1 }}
-                            onClick={() => switchPage(true)}
                         >
-                            <EditNoteIcon fontSize="inherit" />
-                        </IconButton>
-                    </Box>
-                    <Box sx={{ flexGrow: 1, overflow: "hidden", pb: 2 }}>
-                        <DroppableFoodList
-                            foodList={allFoods.filter((f) =>
-                                (
-                                    f.name.toLowerCase() +
-                                    f.tags.join().toLowerCase()
-                                ).includes(allFoodFilter.toLowerCase())
-                            )}
-                            droppableId={ALL_FOOD_ID}
-                        />
-                    </Box>
+                            <Box
+                                sx={{
+                                    m: 2,
+                                    display: "flex",
+                                    flexDirection: "row",
+                                }}
+                            >
+                                <Autocomplete
+                                    multiple
+                                    options={allFoodTags}
+                                    value={allFoodFilters}
+                                    onChange={(_, tags) => {
+                                        setAllFoodFilters([...tags]);
+                                    }}
+                                    freeSolo
+                                    fullWidth
+                                    renderTags={(
+                                        value: readonly string[],
+                                        getTagProps
+                                    ) =>
+                                        value.map(
+                                            (option: string, index: number) => (
+                                                <Chip
+                                                    variant="outlined"
+                                                    label={option}
+                                                    {...getTagProps({ index })}
+                                                />
+                                            )
+                                        )
+                                    }
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            onChange={(e) => {
+                                                setAllFoodFilterText(
+                                                    e.target.value
+                                                );
+                                            }}
+                                            fullWidth
+                                            variant="standard"
+                                            label="Filter"
+                                        />
+                                    )}
+                                />
+
+                                <IconButton
+                                    aria-label="delete"
+                                    size="large"
+                                    sx={{ ml: 1 }}
+                                    onClick={() => switchPage(true)}
+                                >
+                                    <EditNoteIcon fontSize="inherit" />
+                                </IconButton>
+                            </Box>
+                            <Box
+                                sx={{ flexGrow: 1, overflow: "hidden", pb: 2 }}
+                            >
+                                <DroppableFoodList
+                                    foodList={filterFoods(allFoods, [
+                                        ...allFoodFilters,
+                                        allFoodFilterText,
+                                    ])}
+                                    droppableId={ALL_FOOD_ID}
+                                />
+                            </Box>
+                        </Grid>
+                    ) : null}
+                    <Grid
+                        item
+                        xs={1}
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            height: "100vh",
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                height: "150px",
+                                right: "10px",
+                                top: "calc(50% - 75px)",
+                                mr: 1,
+                            }}
+                        >
+                            <Button
+                                variant="outlined"
+                                sx={{ height: "150px" }}
+                                onClick={() =>
+                                    setShowSideBar((current) => !current)
+                                }
+                            >
+                                {showSideBar ? (
+                                    <KeyboardArrowRightIcon fontSize="large" />
+                                ) : (
+                                    <KeyboardArrowLeftIcon fontSize="large" />
+                                )}
+                            </Button>
+                        </Box>
+                    </Grid>
                 </Grid>
-            </Grid>
-        </DragDropContext>
+            </DragDropContext>
+        </>
     );
 };
 

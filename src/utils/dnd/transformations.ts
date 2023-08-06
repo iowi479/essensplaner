@@ -1,6 +1,6 @@
 import { DraggableLocation } from "react-beautiful-dnd";
-import { DayColumns, Food, FoodDay } from "../../types/FoodTypes";
 import { v4 as uuidv4 } from "uuid";
+import { DayColumns, Food, FoodDay } from "../../types/FoodTypes";
 
 export const reorder = (
     list: Food[],

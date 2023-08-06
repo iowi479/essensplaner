@@ -1,4 +1,5 @@
-import React from "react";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditIcon from "@mui/icons-material/Edit";
 import {
     Box,
     Button,
@@ -9,10 +10,9 @@ import {
     Paper,
     Typography,
 } from "@mui/material";
-import { Food } from "../../types/FoodTypes";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import EditIcon from "@mui/icons-material/Edit";
+import React from "react";
 import { postAllFoodsUpdate } from "../../data/api";
+import { Food } from "../../types/FoodTypes";
 
 interface FoodCardProps {
     food: Food;

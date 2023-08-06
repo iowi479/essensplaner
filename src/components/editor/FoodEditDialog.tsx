@@ -8,9 +8,10 @@ import {
     DialogContent,
     TextField,
 } from "@mui/material";
-import { Food } from "../../types/FoodTypes";
 import { useEffect, useState } from "react";
 import { postAllFoodsUpdate } from "../../data/api";
+import { Food } from "../../types/FoodTypes";
+import { getTags } from "../../utils/food";
 
 type FoodEditDialogProps = {
     setAllFoods: React.Dispatch<React.SetStateAction<Food[]>>;
@@ -18,16 +19,6 @@ type FoodEditDialogProps = {
     allFoods: Food[];
     isOpen: boolean;
     initialFood: Food;
-};
-
-const getOpts = (foods: Food[]): string[] => {
-    const opts = new Set<string>();
-
-    foods.forEach((f) => {
-        f.tags.forEach((tag) => opts.add(tag));
-    });
-
-    return Array.from(opts).sort();
 };
 
 const FoodEditDialog: React.FC<FoodEditDialogProps> = ({
@@ -38,11 +29,26 @@ const FoodEditDialog: React.FC<FoodEditDialogProps> = ({
     initialFood,
 }) => {
     const [food, setFood] = useState(initialFood);
-    const [options, setOptions] = useState(getOpts(allFoods));
+    const [options, setOptions] = useState(getTags(allFoods));
+
+    useEffect(() => {
+        setOptions((currentOptions) => {
+            const result = [...currentOptions];
+
+            food.tags.forEach((tag) => {
+                if (!result.includes(tag)) {
+                    result.push(tag);
+                }
+            });
+
+            return result.sort();
+        });
+    }, [food]);
 
     const handleClose = () => {
         setEditDialogFood(undefined);
     };
+
     const onSave = async () => {
         food.name = food.name.trim();
         for (let i = 0; i < allFoods.length; i++) {
@@ -59,20 +65,6 @@ const FoodEditDialog: React.FC<FoodEditDialogProps> = ({
         });
         handleClose();
     };
-
-    useEffect(() => {
-        setOptions((currentOptions) => {
-            const result = [...currentOptions];
-
-            food.tags.forEach((tag) => {
-                if (!result.includes(tag)) {
-                    result.push(tag);
-                }
-            });
-
-            return result.sort();
-        });
-    }, [food]);
 
     return (
         <Dialog open={isOpen} onClose={handleClose}>
@@ -98,8 +90,7 @@ const FoodEditDialog: React.FC<FoodEditDialogProps> = ({
                         value={food.tags}
                         onChange={(_, tags) => {
                             setFood((currentFood) => {
-                                const f = { ...currentFood, tags };
-                                return f;
+                                return { ...currentFood, tags };
                             });
                         }}
                         freeSolo
