@@ -27,7 +27,11 @@ import {
     reorder,
     scrollToToday,
 } from "../../utils/dnd/transformations";
-import { ALL_FOOD_ID, WINDOW_WIDTH_SHOW_SIDEBAR_SIZE } from "../../utils/env";
+import {
+    ALL_FOOD_ID,
+    POLLING_TIMEOUT,
+    WINDOW_WIDTH_SHOW_SIDEBAR_SIZE,
+} from "../../utils/env";
 import { filterFoods, getTags } from "../../utils/food";
 import DroppableDay from "./DroppableDay";
 import DroppableFoodList from "./DroppableFoodList";
@@ -57,10 +61,10 @@ const DraggableList: React.FC<DraggableListProps> = ({ switchPage }) => {
             } catch (err) {
                 console.error("fetching all days:", err);
             }
-            setTimeout(scrollToToday, 500);
+            setTimeout(() => load(), POLLING_TIMEOUT);
         };
 
-        load();
+        load().then(() => setTimeout(scrollToToday, 500));
     }, []);
 
     useEffect(() => {

@@ -1,22 +1,33 @@
 # syntax=docker/dockerfile:1
-FROM node:18-alpine as ts-compiler
 
-ARG REACT_APP_BACKEND_HOST
-ENV REACT_APP_BACKEND_HOST $REACT_APP_BACKEND_HOST
 
-ARG REACT_APP_BACKEND_PORT
-ENV REACT_APP_BACKEND_PORT $REACT_APP_BACKEND_PORT
+FROM node:18-alpine as ts-compiler-frontend
 
-ARG REACT_APP_BACKEND_PATH
-ENV REACT_APP_BACKEND_PATH $REACT_APP_BACKEND_PATH
-
-WORKDIR /usr/essensplaner
-COPY package.json ./
-COPY tsconfig.json ./
+WORKDIR /usr/essensplaner_frontend
+COPY frontend/package.json ./
+COPY frontend/tsconfig.json ./
 RUN yarn
-COPY . ./
+COPY frontend/ ./
+COPY .env ./
+RUN export $(grep -v '^#' .env | xargs -d '\n')
 RUN yarn build
 
 
-FROM nginx
-COPY --from=ts-compiler /usr/essensplaner/build/ /usr/share/nginx/html/
+FROM node:18-alpine as ts-compiler-backend
+
+WORKDIR /usr/essensplaner_backend
+COPY backend/package.json ./
+COPY backend/tsconfig.json ./
+RUN yarn
+COPY backend/ ./
+RUN yarn build
+
+
+FROM node:18-alpine
+
+WORKDIR /usr/essensplaner
+COPY --from=ts-compiler-backend /usr/essensplaner_backend/package.json ./
+COPY --from=ts-compiler-backend /usr/essensplaner_backend/build ./
+COPY --from=ts-compiler-frontend /usr/essensplaner_frontend/build ./routes/frontend/
+RUN yarn install --prod
+CMD ["index.js"]

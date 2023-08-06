@@ -15,6 +15,7 @@ import { Food } from "../../types/FoodTypes";
 import { newFood } from "../../utils/food";
 import FoodCard from "./FoodCard";
 import FoodEditDialog from "./FoodEditDialog";
+import { POLLING_TIMEOUT } from "../../utils/env";
 
 interface FoodEditorProps {
     switchPage: Function;
@@ -33,6 +34,7 @@ const FoodEditor: React.FC<FoodEditorProps> = ({ switchPage }) => {
                 console.error("fetching all foods:");
                 console.error(err);
             }
+            setTimeout(() => load(), POLLING_TIMEOUT);
         };
 
         load();
