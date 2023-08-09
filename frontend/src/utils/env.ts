@@ -1,11 +1,7 @@
 export const ALL_FOOD_ID = "AllFood";
 
-const PORT_ENV = parseInt(process.env["REACT_APP_PORT"] || "3001");
-const BACKEND_PORT = Number.isInteger(PORT_ENV) ? PORT_ENV : 3001;
-const HOST = process.env["REACT_APP_HOST"] || "localhost";
-const API_PATH = process.env["REACT_APP_API_PATH"] || "/api";
-
-export const BACKEND = `http://${HOST}:${BACKEND_PORT}${API_PATH}`;
+const BACKEND_PORT = 3000;
+export const API_PATH = "/api";
 
 export const WINDOW_WIDTH_SHOW_SIDEBAR_SIZE = 1000;
 export const MIN_ITEM_HEIGHT = 100;

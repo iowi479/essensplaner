@@ -1,13 +1,13 @@
 import { Food, FoodDay, jsonToFoodDays } from "../types/FoodTypes";
-import { BACKEND } from "../utils/env";
+import { API_PATH } from "../utils/env";
 
 export const fetchAllFoods = async (): Promise<Food[]> => {
-    const req = await fetch(BACKEND + "/food/all");
+    const req = await fetch(API_PATH + "/food/all");
     return await req.json();
 };
 
 export const fetchFoodDays = async (): Promise<FoodDay[]> => {
-    const req = await fetch(BACKEND + "/food/days");
+    const req = await fetch(API_PATH + "/food/days");
     const result = await req.json();
     return jsonToFoodDays(result);
 };
@@ -19,7 +19,7 @@ export const postAllFoodsUpdate = (allFoods: Food[]) => {
         body: JSON.stringify(allFoods),
     };
 
-    fetch(BACKEND + "/food/all", requestOptions).catch((err) =>
+    fetch(API_PATH + "/food/all", requestOptions).catch((err) =>
         console.error("post all foods: ", err)
     );
 };
@@ -31,7 +31,7 @@ export const postFoodDaysUpdate = (foodDays: FoodDay[]) => {
         body: JSON.stringify(foodDays),
     };
 
-    fetch(BACKEND + "/food/days", requestOptions).catch((err) => {
+    fetch(API_PATH + "/food/days", requestOptions).catch((err) => {
         console.error("post food days: ", err);
     });
 };

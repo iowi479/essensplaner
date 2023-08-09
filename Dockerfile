@@ -7,15 +7,6 @@ COPY frontend/package.json ./
 COPY frontend/tsconfig.json ./
 RUN yarn
 COPY frontend/ ./
-
-ARG HOST
-ARG PORT
-ARG API_PATH
-
-ENV REACT_APP_HOST $HOST
-ENV REACT_APP_PORT $PORT
-ENV REACT_APP_API_PATH $API_PATH
-
 RUN yarn build
 
 
@@ -30,6 +21,8 @@ RUN yarn build
 
 
 FROM node:18-alpine
+
+ENV NODE_ENV="production"
 
 WORKDIR /usr/essensplaner
 COPY --from=ts-compiler-backend /usr/essensplaner_backend/package.json ./

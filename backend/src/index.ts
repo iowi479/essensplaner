@@ -2,7 +2,7 @@ import cors from "cors";
 import express from "express";
 import router from "./routes/routes";
 import { preLoadData } from "./utils/storage";
-import { HOST, PORT } from "./utils/env";
+import { API_PATH, PORT } from "./utils/env";
 import path from "path";
 
 const app = express();
@@ -12,10 +12,10 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "routes", "frontend")));
 
-app.use("/api", router);
+app.use(API_PATH, router);
 
 const server = app.listen(PORT, () => {
-    console.log(`server started on http://${HOST}:${PORT}/`);
+    console.log(`server started on port: ${PORT}/`);
     preLoadData();
 });
 

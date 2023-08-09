@@ -2,18 +2,6 @@
 
 ## Quickstart
 
-modify .env.default and rename to .env
-
-```bash
-sh script.sh
-```
-
-## Build your own
-
-### configure .env
-
-modify .env.default and rename to .env
-
 ### building
 
 ```bash
@@ -22,12 +10,10 @@ docker build -t iowi/essensplaner:1.0 .
 
 ### running
 
-you can modify the name, name of volume and the correct version of the image.
-
-the ports and the storage path have to be the same as in the env-file.
+you can modify the name, name of volume, exposed port and the correct version of the image.
 
 then run the container
 
 ```bash
-docker run -d --name essensplaner -v essensplaner_storage:/usr/essensplaner/storage/ -p 80:80 --env-file ./.env --restart unless-stopped iowi/essensplaner:1.0
+docker run -d --name essensplaner -v essensplaner_storage:/usr/essensplaner/storage/ -p 3000:3000 --restart unless-stopped iowi/essensplaner:1.0
 ```
