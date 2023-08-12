@@ -1,7 +1,9 @@
 export const ALL_FOOD_ID = "AllFood";
 
-const BACKEND_PORT = 3000;
-export const API_PATH = "/api";
+export const API_PATH =
+    process.env.NODE_ENV === "production"
+        ? "/api"
+        : "http://localhost:3000/api";
 
 export const WINDOW_WIDTH_SHOW_SIDEBAR_SIZE = 1000;
 export const MIN_ITEM_HEIGHT = 100;
