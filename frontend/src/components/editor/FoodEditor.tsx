@@ -58,6 +58,10 @@ const FoodEditor: React.FC<FoodEditorProps> = ({ switchPage }) => {
             }
         }
 
+        if (missing === -1) {
+            missing = ids.length;
+        }
+
         const createdFood = newFood(missing);
 
         setAllFoods((currentFoods) => {
