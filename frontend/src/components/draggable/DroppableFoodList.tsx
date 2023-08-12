@@ -54,11 +54,7 @@ const DroppableFoodList: React.FC<DroppableFoodListProps> = ({
                             }}
                         >
                             {foodList.map((food, i) => (
-                                <DraggableFood
-                                    food={food}
-                                    key={food.id}
-                                    index={i}
-                                />
+                                <DraggableFood food={food} key={i} index={i} />
                             ))}
                             {provided.placeholder}
                         </Box>

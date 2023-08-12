@@ -15,7 +15,6 @@ import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import {
     fetchAllFoods,
     fetchFoodDays,
-    postAllFoodsUpdate,
     postFoodDaysUpdate,
 } from "../../data/api";
 import { Food, FoodDay } from "../../types/FoodTypes";
@@ -41,35 +40,50 @@ interface DraggableListProps {
 }
 
 const DraggableList: React.FC<DraggableListProps> = ({ switchPage }) => {
-    const [foodList, setFoodList] = useState<FoodDay[]>([]);
+    const [foodDaysList, setFoodDaysList] = useState<FoodDay[]>([]);
     const [allFoods, setAllFoods] = useState<Food[]>([]);
+    const [allFoodTags, setAllFoodTags] = useState<string[]>(getTags(allFoods));
+
     const [showSideBar, setShowSideBar] = useState<boolean>(true);
+
     const [allFoodFilterText, setAllFoodFilterText] = useState<string>("");
     const [allFoodFilters, setAllFoodFilters] = useState<string[]>([]);
-    const [allFoodTags, setAllFoodTags] = useState<string[]>(getTags(allFoods));
+    const [filteredFoodList, setFilteredFoodList] = useState<Food[]>([]);
+
+    console.log("allFood", allFoods);
+    console.log("filtered", filteredFoodList);
 
     useEffect(() => {
         const load = async () => {
             try {
-                await setAllFoods(await fetchAllFoods());
-            } catch (err) {
-                console.error("fetching all foods:", err);
-            }
+                await Promise.all([
+                    setAllFoods(
+                        (
+                            await fetchAllFoods()
+                        ).sort((a, b) => a.name.localeCompare(b.name))
+                    ),
 
-            try {
-                await setFoodList(await fetchFoodDays());
+                    setFoodDaysList(await fetchFoodDays()),
+                ]);
             } catch (err) {
-                console.error("fetching all days:", err);
+                console.error("fetching data:", err);
+            } finally {
+                setTimeout(() => load(), POLLING_TIMEOUT);
             }
-            setTimeout(() => load(), POLLING_TIMEOUT);
         };
 
         load().then(() => setTimeout(scrollToToday, 500));
     }, []);
 
     useEffect(() => {
-        setAllFoodTags(getTags(allFoods));
+        setAllFoodTags(getTags(allFoods).sort());
     }, [allFoods]);
+
+    useEffect(() => {
+        setFilteredFoodList(
+            filterFoods(allFoods, [...allFoodFilters, allFoodFilterText])
+        );
+    }, [allFoods, allFoodFilters, allFoodFilterText]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -94,17 +108,17 @@ const DraggableList: React.FC<DraggableListProps> = ({ switchPage }) => {
 
         if (destination.droppableId === ALL_FOOD_ID) {
             if (source.droppableId === ALL_FOOD_ID) {
-                setAllFoods((currentState) => {
-                    const result = reorder(
-                        currentState,
-                        source.index,
-                        destination.index
-                    );
-                    postAllFoodsUpdate(result);
-                    return result;
-                });
+                // setAllFoods((currentState) => {
+                //     const result = reorder(
+                //         currentState,
+                //         source.index,
+                //         destination.index
+                //     );
+                //     postAllFoodsUpdate(result);
+                //     return result;
+                // });
             } else {
-                setFoodList((currentState) => {
+                setFoodDaysList((currentState) => {
                     const result = currentState.map((day) => {
                         if (day.id === ids.sourceDayId) {
                             return remove(day, ids.sourceCol, source.index);
@@ -117,7 +131,7 @@ const DraggableList: React.FC<DraggableListProps> = ({ switchPage }) => {
         } else {
             switch (source.droppableId) {
                 case destination.droppableId:
-                    setFoodList((currentState) => {
+                    setFoodDaysList((currentState) => {
                         const result = currentState.map((day) => {
                             if (day.id === ids.sourceDayId) {
                                 return {
@@ -136,11 +150,11 @@ const DraggableList: React.FC<DraggableListProps> = ({ switchPage }) => {
                     break;
 
                 case ALL_FOOD_ID:
-                    setFoodList((currentState) => {
+                    setFoodDaysList((currentState) => {
                         const result = currentState.map((day) => {
                             if (day.id === ids.destDayId) {
                                 return copy(
-                                    allFoods,
+                                    filteredFoodList,
                                     day,
                                     ids.destCol,
                                     source,
@@ -154,7 +168,7 @@ const DraggableList: React.FC<DraggableListProps> = ({ switchPage }) => {
                     break;
 
                 default:
-                    setFoodList((currentState) => {
+                    setFoodDaysList((currentState) => {
                         let src: Food[] | undefined = undefined;
                         let dst: Food[] | undefined = undefined;
                         const result = currentState.map((day) => {
@@ -193,7 +207,7 @@ const DraggableList: React.FC<DraggableListProps> = ({ switchPage }) => {
                         sx={{ maxHeight: "100vh", overflow: "scroll" }}
                     >
                         <Box sx={{ display: "flex", flexDirection: "column" }}>
-                            {foodList.map((foodDay, i) => (
+                            {foodDaysList.map((foodDay, i) => (
                                 <DroppableDay
                                     foodDay={foodDay}
                                     key={i}
@@ -223,9 +237,9 @@ const DraggableList: React.FC<DraggableListProps> = ({ switchPage }) => {
                                     multiple
                                     options={allFoodTags}
                                     value={allFoodFilters}
-                                    onChange={(_, tags) => {
-                                        setAllFoodFilters([...tags]);
-                                    }}
+                                    onChange={(_, tags) =>
+                                        setAllFoodFilters([...tags])
+                                    }
                                     freeSolo
                                     fullWidth
                                     renderTags={(
@@ -245,11 +259,12 @@ const DraggableList: React.FC<DraggableListProps> = ({ switchPage }) => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            onChange={(e) => {
+                                            onChange={(e) =>
                                                 setAllFoodFilterText(
                                                     e.target.value
-                                                );
-                                            }}
+                                                )
+                                            }
+                                            value={allFoodFilterText}
                                             fullWidth
                                             variant="standard"
                                             label="Filter"
@@ -270,10 +285,7 @@ const DraggableList: React.FC<DraggableListProps> = ({ switchPage }) => {
                                 sx={{ flexGrow: 1, overflow: "hidden", pb: 2 }}
                             >
                                 <DroppableFoodList
-                                    foodList={filterFoods(allFoods, [
-                                        ...allFoodFilters,
-                                        allFoodFilterText,
-                                    ])}
+                                    foodList={filteredFoodList}
                                     droppableId={ALL_FOOD_ID}
                                 />
                             </Box>
