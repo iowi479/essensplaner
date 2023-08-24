@@ -74,7 +74,6 @@ export const readFoodDays = (): string => {
             const data = readFileSync(FOOD_DAYS_FILE);
 
             const days: FoodDay[] = jsonToFoodDays(JSON.parse(data.toString()));
-
             const empty = getFoodList(2, 14);
             for (let i = 0; i < empty.length; i++) {
                 for (let j = 0; j < days.length; j++) {
@@ -107,14 +106,9 @@ export const readFoodDays = (): string => {
 };
 
 const sameDay = (foodDay1: FoodDay, foodDay2: FoodDay): boolean => {
-    if (foodDay1.day.getDate() === foodDay2.day.getDate()) {
-        if (foodDay1.day.getMonth() === foodDay2.day.getMonth()) {
-            if (foodDay1.day.getFullYear() === foodDay2.day.getFullYear()) {
-                return true;
-            }
-        }
-    }
-    return false;
+    return (
+        foodDay1.day.toLocaleDateString() === foodDay2.day.toLocaleDateString()
+    );
 };
 
 export const preLoadData = (): void => {

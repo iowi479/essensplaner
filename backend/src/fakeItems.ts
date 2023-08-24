@@ -17,14 +17,13 @@ export const getItems = (count: number, offset: number = 0): Food[] => {
     return foodList;
 };
 
-export const getFoodList = (previosDays: number, days: number): FoodDay[] => {
+export const getFoodList = (previousDays: number, days: number): FoodDay[] => {
     const list: FoodDay[] = [];
     const today = new Date();
 
-    for (let i = 0; i < previosDays + days; i++) {
+    for (let i = 0; i < previousDays + days; i++) {
         const currDate = new Date();
-        currDate.setDate(today.getDate() - previosDays + i);
-
+        currDate.setUTCDate(today.getUTCDate() - previousDays + i);
         const day: FoodDay = {
             id: idFromDate(currDate),
             day: currDate,
@@ -40,5 +39,5 @@ export const getFoodList = (previosDays: number, days: number): FoodDay[] => {
 };
 
 export const idFromDate = (date: Date): number => {
-    return 2023 * 10000 + date.getMonth() * 100 + date.getDate();
+    return 2023 * 10000 + (date.getUTCMonth() + 1) * 100 + date.getUTCDate();
 };
