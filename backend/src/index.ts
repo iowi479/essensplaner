@@ -4,6 +4,7 @@ import router from "./routes/routes";
 import { preLoadData } from "./utils/storage";
 import { API_PATH, PORT } from "./utils/env";
 import path from "path";
+import { logger } from "./utils/logging";
 
 const app = express();
 
@@ -15,12 +16,13 @@ app.use(express.static(path.join(__dirname, "routes", "frontend")));
 app.use(API_PATH, router);
 
 const server = app.listen(PORT, () => {
-    console.log(`server started on port: ${PORT}/`);
+    logger.info(`server started on port: ${PORT}/`);
     preLoadData();
 });
 
 // for fast container stop
 process.on("SIGTERM", async () => {
+    logger.info(`shuting down...`);
     await server.close();
     process.exit();
 });

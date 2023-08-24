@@ -8,6 +8,10 @@ export const API_PATH =
 export const WINDOW_WIDTH_SHOW_SIDEBAR_SIZE = 1000;
 export const MIN_ITEM_HEIGHT = 100;
 
+export const VERBOSE_INFO =
+    !!process.env.VERBOSE || process.env.NODE_ENV !== "production";
+export const VERBOSE_ERROR = true || process.env.NODE_ENV !== "production";
+
 const WHITE = "#ffffff";
 
 export const LIST_BACKGROUNDCOLOR = "#ededed";
