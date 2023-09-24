@@ -12,6 +12,7 @@ import { logger } from "./logging";
 
 let CURRENT_ALL_FOODS_DATA: string | undefined = undefined;
 let CURRENT_FOOD_DAYS_DATA: string | undefined = undefined;
+let CURRENT_FOOD_DAYS_DATA_UPDATE: string = Date.now().toLocaleString();
 
 export const writeAllFoods = (allFoods: Food[]): void => {
     CURRENT_ALL_FOODS_DATA = JSON.stringify(allFoods);
@@ -79,7 +80,8 @@ export const readAllFoods = (): string => {
 };
 
 export const readFoodDays = (): string => {
-    if (!CURRENT_FOOD_DAYS_DATA) {
+    // Last Update not from today
+    if (Date.now().toLocaleString() !== CURRENT_FOOD_DAYS_DATA_UPDATE) {
         if (existsSync(FOOD_DAYS_FILE)) {
             const data = readFileSync(FOOD_DAYS_FILE);
 
@@ -118,7 +120,7 @@ export const readFoodDays = (): string => {
             );
         }
     }
-    return CURRENT_FOOD_DAYS_DATA;
+    return CURRENT_FOOD_DAYS_DATA || "Server Error";
 };
 
 const sameDay = (foodDay1: FoodDay, foodDay2: FoodDay): boolean => {
