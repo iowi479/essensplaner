@@ -10,9 +10,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-
 app.use(express.static(path.join(__dirname, "routes", "frontend")));
-
 app.use(API_PATH, router);
 
 const server = app.listen(PORT, () => {
