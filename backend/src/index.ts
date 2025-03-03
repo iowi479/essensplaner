@@ -23,6 +23,6 @@ const server = app.listen(PORT, () => {
 // for fast container stop
 process.on("SIGTERM", async () => {
     logger.info(`shuting down...`);
-    await server.close();
+    server.close();
     process.exit();
 });

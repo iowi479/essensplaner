@@ -13,5 +13,5 @@ export const PORT = 3000;
 export const API_PATH = "/api";
 
 export const INITIAL_FOOD_ITEMS = 2;
-export const PREVIOUS_DAYS = 2;
+export const PREVIOUS_DAYS = 10;
 export const FOLLOWING_DAYS = 14;
